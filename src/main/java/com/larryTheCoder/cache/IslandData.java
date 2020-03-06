@@ -107,7 +107,7 @@ public class IslandData implements Cloneable {
         this.islandUniquePlotId = islandObj.getInteger("islandUniqueId");
 
         this.plotBiome = dataObj.getString("biome");
-        this.isLocked = dataObj.getBoolean("locked");
+        this.isLocked = (boolean) dataObj.getObject("locked");
         this.levelHandicap = dataObj.getInteger("levelHandicap");
         this.settings = new IslandSettings(dataObj.getString("protectionData"));
     }
@@ -235,7 +235,9 @@ public class IslandData implements Cloneable {
      */
     public boolean onIsland(Location target) {
         Level level = Server.getInstance().getLevelByName(levelName);
-        if (level == null || levelName == null) return false;
+        if (level == null || levelName == null) {
+            return false;
+        }
 
         return target.getLevel().getName().equalsIgnoreCase(levelName)
                 && target.getFloorX() >= getMinProtectedX()

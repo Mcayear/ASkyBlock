@@ -88,9 +88,11 @@ public class MySQLConfig implements AbstractConfig {
 
     @Override
     public boolean checkConnection() throws SQLException {
-        if (connection == null) return false;
+        if (connection == null) {
+            return false;
+        }
 
-        try (java.sql.Connection con = connection.getConnectionSource().getConnection()) {
+        try (java.sql.Connection con = connection.open().getJdbcConnection()) {
             return !con.isClosed();
         }
     }
@@ -105,7 +107,7 @@ public class MySQLConfig implements AbstractConfig {
         if (this.connection == null) {
             return false;
         }
-        this.connection.getConnectionSource().getConnection().close();
+        this.connection.open().getJdbcConnection().close();
         this.connection = null;
         return true;
     }

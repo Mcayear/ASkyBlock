@@ -60,7 +60,7 @@ public class TeamManager {
             for (Map.Entry<String, CoopData> data : dataList.entrySet()) {
                 String leader = data.getKey().toLowerCase();
                 CoopData pd = data.getValue();
-
+                cfg.set(leader+".teamLeader",leader);
                 cfg.set(leader + ".teamName", pd.getTeamName());
                 cfg.set(leader + ".members", Utils.arrayToString(pd.getMembers()));
             }
@@ -93,7 +93,7 @@ public class TeamManager {
         for (Map.Entry<String, CoopData> data : dataList.entrySet()) {
             String leader = data.getKey().toLowerCase();
             CoopData pd = data.getValue();
-
+            cfg.set(leader+".teamLeader",leader);
             cfg.set(leader + ".teamName", pd.getTeamName());
             cfg.set(leader + ".members", Utils.arrayToString(pd.getMembers()));
         }
@@ -164,6 +164,23 @@ public class TeamManager {
         if (data != null) {
             data.addMembers(member);
         }
+        saveData();
+    }
+
+    public void quitTeam(String leader,String player,String message){
+        CoopData pd = getLeaderCoop(leader);
+        if (!pd.isMember(player)) {
+            return;
+        }
+        pd.removeMembers(player);
+        Player p = Server.getInstance().getPlayer(player);
+        if (p.isOnline()) {
+            p.sendMessage(plugin.getPrefix() + message);
+        } else {
+            plugin.getMessages().setMessage(player, message);
+        }
+
+
     }
 
     /**

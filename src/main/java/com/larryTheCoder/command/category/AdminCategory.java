@@ -26,8 +26,10 @@
 package com.larryTheCoder.command.category;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import com.larryTheCoder.ASkyBlock;
+import com.larryTheCoder.cache.PlayerData;
 import com.larryTheCoder.listener.invitation.Invitation;
 import com.larryTheCoder.listener.invitation.InvitationHandler;
 import com.larryTheCoder.player.TeamManager;
@@ -127,6 +129,48 @@ public class AdminCategory extends SubCategory {
 
                 invite.denyInvitation();
                 break;
+            case "kickmember":
+                p = this.getPlugin().getServer().getPlayer(sender.getName());
+                TeamManager manager = this.getPlugin().getTManager();
+                if(!getPlugin().getIslandManager().checkIsland(p)){
+                    sender.sendMessage(getPrefix() + getLocale(p).errorNoIsland);
+                    break;
+                }
+                if(args.length > 1){
+                    String playerName = args[1];
+                    if(playerName.equalsIgnoreCase(sender.getName())){
+                        sender.sendMessage(this.getPlugin().getPrefix() + this.getPlugin().getLocale(p).errorKickOwner);
+                        return;
+                    }
+                    List<String> teams = this.getPlugin().getTManager().getPlayerCoop(playerName).getMembers();
+                    if(teams.contains(playerName)){
+
+                        Player player = Server.getInstance().getPlayer(playerName);
+                        if(player != null){
+                            manager.kickMember(p,playerName,"");
+                        }else{
+                            p.sendMessage(this.getPlugin().getPrefix() + this.getPlugin().getLocale(p).errorOfflinePlayer);
+                        }
+                        break;
+                    }
+                }else{
+                    return;
+                }
+                break;
+            case "quit":
+                manager = this.getPlugin().getTManager();
+                String leader;
+                if(!getPlugin().getIslandManager().checkIsland(p)){
+                    sender.sendMessage(this.getPlugin().getPrefix() + this.getPlugin().getLocale(p).errorNoIsland);
+                    return;
+                }
+                leader = manager.getPlayerCoop(sender.getName()).getLeaderName();
+                if(leader.equalsIgnoreCase(sender.getName())){
+                    sender.sendMessage(this.getPlugin().getPrefix() + this.getPlugin().getLocale(p).errorQuit);
+                    return;
+                }
+                manager.quitTeam(leader,sender.getName(),this.getPlugin().getLocale(p).successQuit);
+                break;
             case "locale":
                 if (args.length != 2) {
                     break;
@@ -147,7 +191,7 @@ public class AdminCategory extends SubCategory {
 
                 // This checks either the player already set into a team
                 // or not.
-                TeamManager manager = getPlugin().getTManager();
+                manager = getPlugin().getTManager();
                 if (manager.hasTeam(inviter.getName())) {
                     sender.sendMessage(getPrefix() + getLocale(p).errorInTeam.replace("[player]", args[1]));
                     break;

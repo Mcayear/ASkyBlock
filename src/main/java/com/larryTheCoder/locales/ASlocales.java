@@ -116,6 +116,8 @@ public final class ASlocales {
     public String errorInTeam = "§c这个玩家 [player] 已经在队伍中了!";
     public String errorBlockedByAPI = "§c使用API的插件阻止了此操作.";
     public String errorKickOwner = "§c你不能把自己踢出自己的小岛!";
+    public String errorQuit = "§c你不能退出自己的小岛，请执行 /is reset 清空自己的岛屿!";
+    public String successQuit = "§a你成功离开 [player] 的岛屿!";
     public String errorAdminOnly = "§c你不能把管理员从你的岛上踢出去!";
     public String errorFailedNormal = "§c无效或错误的参数";
     public String errorFailedCritical = "§c尝试此命令失败。联系管理员!";
@@ -123,6 +125,7 @@ public final class ASlocales {
     public String errorNotEnoughMoney = "§c你没有足够的钱！默认价格: $[price]";
     public String errorIslandPC = "§c无法尝试生成级别。PC型原理图";
     public String kickSuccess = "§a已将玩家 [player] 从空岛世界踢出!";
+    public String kickByLeader = "§a你被 [player] 从空岛世界踢出!";
     public String createSuccess = "§a成功地为您创建了一个岛!";
     public String resetSuccess = "§a成功清除您的岛!";
     public String renameSuccess = "§a已成功重命名岛!";

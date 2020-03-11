@@ -82,7 +82,7 @@ public class Messages {
         if (messageStore == null) {
             return;
         }
-        Utils.send("&7Saving offline messages...");
+        Utils.send("&7保存离线信息中...");
         try {
             // Convert to a serialized string
             final HashMap<String, Object> offlineMessages = new HashMap<>();
@@ -95,7 +95,7 @@ public class Messages {
     }
 
     void loadMessages() {
-        Utils.send("&7Loading offline messages...");
+        Utils.send("&7加载离线信息中...");
         try {
             messageStore = Utils.loadYamlFile("messages.yml");
             HashMap<String, Object> temp = messageStore.getSections("messages");

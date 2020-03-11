@@ -87,7 +87,7 @@ public class Invitation {
         List<IslandData> dataList = plugin.getIslandsInfo(receiver.getName());
         // Check if the player has an island
         if (!dataList.isEmpty()) {
-            receiver.sendMessage(plugin.getPrefix() + "Deleting all of your islands");
+            receiver.sendMessage(plugin.getPrefix() + "由于你接受了"+sender.getName()+"的邀请，成为ta的空岛成员之一 所以..正在删除你的所有空岛..");
             //dataList.forEach((island) -> plugin.getDatabase().deleteIsland(island));
         }
 
@@ -97,16 +97,16 @@ public class Invitation {
     }
 
     public void denyInvitation() {
-        sender.sendMessage(plugin.getPrefix() + TextFormat.RED + receiver.getName() + " denied your invitation!");
-        receiver.sendMessage(plugin.getPrefix() + TextFormat.RED + "You denied " + sender.getName() + "'s invitation!");
+        sender.sendMessage(plugin.getPrefix() + TextFormat.RED + receiver.getName() + " 拒绝了你的邀请!");
+        receiver.sendMessage(plugin.getPrefix() + TextFormat.RED + "你拒绝了" + sender.getName() + "的邀请!");
 
         // Otherwise remove this.
         handler.removeInvitation(this);
     }
 
     private void expire() {
-        receiver.sendMessage(plugin.getPrefix() + TextFormat.RED + "The invitation from " + sender.getName() + " expired!");
-        sender.sendMessage(plugin.getPrefix() + TextFormat.RED + "The invitation to " + receiver + " expired!");
+        receiver.sendMessage(plugin.getPrefix() + TextFormat.RED + "来自" + sender.getName() + "的邀请已到期!");
+        sender.sendMessage(plugin.getPrefix() + TextFormat.RED + "邀请 " + receiver + "的请求已到期!");
     }
 
     boolean tick() {

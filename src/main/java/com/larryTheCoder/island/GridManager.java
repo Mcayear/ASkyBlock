@@ -169,13 +169,11 @@ public class GridManager {
     public Location getSafeHomeLocation(String p, int number) {
         IslandData pd = plugin.getIslandInfo(p, number);
         if (pd == null) {
-            System.out.println("pd: 是空 GridManager - 172");
             // Get the default home, which may be null too, but that's okay
             pd = plugin.getIslandInfo(p, 1);
         }
 
         if (pd != null) {
-            System.out.println("pd: 不是空 GridManager - 178");
             Location locationSafe = pd.getHome();
             if (locationSafe.getFloorX() == 0 || locationSafe.getFloorY() == 0 || locationSafe.getFloorY() == 0) {
                 Vector2 cartesianPlane = pd.getCenter();

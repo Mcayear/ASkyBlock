@@ -240,7 +240,6 @@ public class Utils {
         try {
             Server.getInstance().getLogger().info(ASkyBlock.get().getPrefix() + TextFormat.GREEN + msg.replace("&", "§"));
         } catch (Throwable exc) {
-            System.out.println("ASkyBlock failed to send: " + msg);
         }
     }
 

@@ -130,7 +130,6 @@ public class ServerPanel implements Listener {
                 boolean locked = response.getToggleResponse(responseId++);
 
                 boolean teleport = response.getToggleResponse(responseId);
-                System.out.println("执行了 ServerPanel id:"+id+" - 133");
                 plugin.getIslandManager().createIsland(p, id, worldName, islandName, locked, EnumBiome.PLAINS, teleport);
                 break;
             // Challenges data

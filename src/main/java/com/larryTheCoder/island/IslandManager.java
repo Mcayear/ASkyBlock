@@ -190,7 +190,6 @@ public class IslandManager {
 
         WorldSettings settings = plugin.getSettings(levelName);
         Level world = Server.getInstance().getLevelByName(levelName);
-        System.out.println("设置读取-- IslandManager - 191");
         // Make sure the search didn't interrupt other processes.
         TaskManager.runTaskAsync(() -> {
             for (int i = 0; i < Integer.MAX_VALUE; ++i) {
@@ -380,14 +379,14 @@ public class IslandManager {
                 p.sendMessage(plugin.getPrefix() + plugin.getLocale(p).errorNoIslandOther);
                 return;
             }
-            if (pd.getPlotOwner() != null) {
+            if (pd.getPlotOwner() == null) {
                 p.sendMessage(plugin.getPrefix() + plugin.getLocale(p).errorOfflinePlayer.replace("[player]", arg));
                 return;
             }
             Location home = plugin.getGrid().getSafeHomeLocation(pd.getPlotOwner(), pd.getHomeCountId());
             //if the home null
             if (home == null) {
-                p.sendMessage(plugin.getPrefix() + TextFormat.RED + "Failed to find your island safe spawn");
+                p.sendMessage(plugin.getPrefix() + TextFormat.RED + "无法找到岛屿有效传送点");
                 return;
             }
             plugin.getTeleportLogic().safeTeleport(p, home, false, pd.getHomeCountId());

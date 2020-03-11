@@ -478,7 +478,7 @@ public class ASkyBlock extends ASkyBlockAPI {
      */
     @Deprecated
     public IslandData getIslandInfo(String player) {
-        return getIslandInfo(player, 0);
+        return getIslandInfo(player, 1);
     }
 
     /**
@@ -510,7 +510,6 @@ public class ASkyBlock extends ASkyBlockAPI {
                 .executeAndFetchTable();
 
         if (levelPlot.rows().isEmpty()) {
-            System.out.println("是 Empty ASkyBlock - 514");
             return null;
         }
 

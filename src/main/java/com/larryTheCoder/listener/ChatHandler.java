@@ -103,6 +103,7 @@ public class ChatHandler implements Listener {
                         online = true;
                     }
                 }
+                player.sendMessage(this.plugin.getPrefix() + " [团队] " + player.getName() + "> " + message);
             }
             // todo spy function
             if (!online) {
@@ -111,10 +112,24 @@ public class ChatHandler implements Listener {
                 teamChatUsers.remove(player);
             }
         } else {
-            player.sendMessage(plugin.getPrefix() + TextFormat.RED + plugin.getLocale(player).teamChatNoTeamAround);
-            player.sendMessage(plugin.getPrefix() + TextFormat.RED + plugin.getLocale(player).teamChatStatusOff);
-            // Not in a team any more so delete
-            teamChatUsers.remove(player);
+            String leader = pd.getLeaderName();
+            if("".equalsIgnoreCase(leader)){
+                CoopData pd1 = plugin.getTManager().getPlayerCoop(leader);
+                Player leaderPlayer = plugin.getServer().getPlayer(leader);
+                for (String teamMembers : pd1.getMembers()) {
+                    Player teams = plugin.getServer().getPlayer(teamMembers);
+                    if(teams != null){
+                        teams.sendMessage(this.plugin.getPrefix() + " [团队] " + player.getName() + "> " + message);
+                    }
+                }
+                if(leaderPlayer != null){
+                    leaderPlayer.sendMessage(this.plugin.getPrefix() + " [团队] " + player.getName() + "> " + message);
+                }
+            }
+//            player.sendMessage(plugin.getPrefix() + TextFormat.RED + plugin.getLocale(player).teamChatNoTeamAround);
+//            player.sendMessage(plugin.getPrefix() + TextFormat.RED + plugin.getLocale(player).teamChatStatusOff);
+//            // Not in a team any more so delete
+//            teamChatUsers.remove(player);
         }
     }
 

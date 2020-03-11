@@ -183,12 +183,14 @@ public class IslandManager {
                     pl.sendMessage(plugin.getLocale(pl).errorNotEnoughMoney.replace("[price]", Double.toString(Settings.islandCost)));
                     return;
                 }
+            }else if(!(plugin.getFastCache().getIslandData(pl.getName()) == null && Settings.firstIslandFree)){
+                ASkyBlock.econ.reduceMoney(pl,Settings.islandCost);
             }
         }
 
         WorldSettings settings = plugin.getSettings(levelName);
         Level world = Server.getInstance().getLevelByName(levelName);
-
+        System.out.println("设置读取-- IslandManager - 191");
         // Make sure the search didn't interrupt other processes.
         TaskManager.runTaskAsync(() -> {
             for (int i = 0; i < Integer.MAX_VALUE; ++i) {
@@ -209,6 +211,7 @@ public class IslandManager {
                     }
 
                     IslandData resultData = new IslandDataBuilder()
+                            .setHomeId(templateId)
                             .setGridCoordinates(new Vector2(x, z))
                             .setIslandUniquePlotId(generatedData)
                             .setPlotOwner(pl.getName())
@@ -262,13 +265,19 @@ public class IslandManager {
                                 pl.sendMessage(plugin.getPrefix() + plugin.getLocale(pl).createSuccess);
                                 uniqueId.add(Integer.toString(resultData.getIslandUniquePlotId()));
 
-                                if (teleport) plugin.getGrid().homeTeleport(pl, resultData.getHomeCountId());
+                                if (teleport) {
+                                    plugin.getGrid().homeTeleport(pl, resultData.getHomeCountId());
+                                }
+
                             }
                         });
+
                     });
+                    return;
                 }
             }
         });
+
     }
 
     public int generateIslandKey(Location loc) {

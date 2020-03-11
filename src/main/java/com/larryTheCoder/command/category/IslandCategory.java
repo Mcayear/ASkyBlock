@@ -58,6 +58,7 @@ public class IslandCategory extends SubCategory {
                 return sender.hasPermission("is.command.home") && sender.isPlayer();
             case "teleport":
                 return sender.hasPermission("is.command.teleport") && sender.isPlayer();
+            default:break;
         }
 
         return false;
@@ -67,14 +68,14 @@ public class IslandCategory extends SubCategory {
     public String getDescription(String commandName) {
         switch (commandName.toLowerCase()) {
             case "create":
-                return "Start to create a new island.";
+                return "开始创建新岛屿.";
             case "reset":
-                return "Reset your original island.";
+                return "重置原始岛.";
             case "home":
             case "sethome":
-                return "Set your island main spawn position.";
+                return "设置你的岛主出生点位置.";
             case "teleport":
-                return "Teleport to your island spawn position.";
+                return "传送到你的岛屿出生点位置.";
             default:
                 return "NaN";
         }
@@ -126,6 +127,7 @@ public class IslandCategory extends SubCategory {
 
                 getPlugin().getIslandManager().teleportPlayer(p, args[1]);
                 break;
+            default:break;
         }
     }
 }

@@ -92,7 +92,7 @@ public class MySQLConfig implements AbstractConfig {
             return false;
         }
 
-        try (java.sql.Connection con = connection.open().getJdbcConnection()) {
+        try (java.sql.Connection con = connection.getDataSource().getConnection()) {
             return !con.isClosed();
         }
     }
@@ -107,7 +107,7 @@ public class MySQLConfig implements AbstractConfig {
         if (this.connection == null) {
             return false;
         }
-        this.connection.open().getJdbcConnection().close();
+        this.connection.getDataSource().getConnection().close();
         this.connection = null;
         return true;
     }

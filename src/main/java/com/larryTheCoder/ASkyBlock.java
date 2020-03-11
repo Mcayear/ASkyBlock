@@ -220,7 +220,7 @@ public class ASkyBlock extends ASkyBlockAPI {
     private void initGitCheckup() {
         Properties properties = new Properties();
         try {
-            properties.load(getResource("git-sb.properties"));
+            properties.load(getResource("git.properties"));
         } catch (IOException e) {
             getServer().getLogger().info("§cERROR! We cannot load the git loader for this ASkyBlock build!");
             // Wtf? Maybe this user is trying to using unofficial build of ASkyBlock?
@@ -402,8 +402,8 @@ public class ASkyBlock extends ASkyBlockAPI {
         }
         PlayerData pd = getPlayerInfo(p);
         if (!this.getAvailableLocales().containsKey(pd.getLocale())) {
-            Utils.send("&cUnknown locale: &e" + pd.getLocale());
-            Utils.send("&cSwitching to default: &een_US");
+//            Utils.send("&cUnknown locale: &e" + pd.getLocale());
+//            Utils.send("&cSwitching to default: &een_US");
             return getAvailableLocales().get(Settings.defaultLanguage);
         }
         return getAvailableLocales().get(pd.getLocale());
@@ -478,7 +478,7 @@ public class ASkyBlock extends ASkyBlockAPI {
      */
     @Deprecated
     public IslandData getIslandInfo(String player) {
-        return getIslandInfo(player, 1);
+        return getIslandInfo(player, 0);
     }
 
     /**
@@ -510,10 +510,12 @@ public class ASkyBlock extends ASkyBlockAPI {
                 .executeAndFetchTable();
 
         if (levelPlot.rows().isEmpty()) {
+            System.out.println("是 Empty ASkyBlock - 514");
             return null;
         }
 
-        return IslandData.fromRows(levelPlot.rows().get(0));
+        IslandData data = IslandData.fromRows(levelPlot.rows().get(0));
+        return data;
     }
 
     @Deprecated
@@ -589,15 +591,12 @@ public class ASkyBlock extends ASkyBlockAPI {
     @Deprecated
     public PlayerData getPlayerInfo(String player) {
         Connection conn = getDatabase().getConnection();
-
         Table data = conn.createQuery(FETCH_PLAYER_MAIN.getQuery())
-                .addParameter("plotOwner", player)
-                .executeAndFetchTable();
-
+                    .addParameter("plotOwner", player)
+                    .executeAndFetchTable();
         if (data.rows().isEmpty()) {
             return null;
         }
-
         return PlayerData.fromRows(data.rows().get(0));
     }
 }

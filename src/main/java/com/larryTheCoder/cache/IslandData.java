@@ -48,6 +48,7 @@ public class IslandData implements Cloneable {
 
     @Setter
     private int islandUniquePlotId = 0;
+
     @Setter
     private int homeCountId = 0;
 
@@ -74,7 +75,9 @@ public class IslandData implements Cloneable {
     public IslandData() {
     }
 
-    @SuppressWarnings("OverridableMethodCallInConstructor")
+
+
+
     public IslandData(String levelName, int xCoord, int zCoord, int plotSize) {
         this.gridCoordinates = new Vector2(xCoord, zCoord);
         this.levelName = levelName;

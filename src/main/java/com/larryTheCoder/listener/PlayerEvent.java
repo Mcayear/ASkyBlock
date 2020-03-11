@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.larryTheCoder.database.TableSet.PLAYER_INSERT_MAIN;
+import static com.larryTheCoder.database.TableSet.PLAYER_UPDATE_MAIN;
 
 /**
  * Events that associate to player
@@ -129,9 +130,10 @@ public class PlayerEvent implements Listener {
                     connection.createQuery(PLAYER_INSERT_MAIN.getQuery())
                             .addParameter("playerName", p.getName())
                             .addParameter("playerUUID", p.getLoginChainData().getXUID())
-                            .addParameter("locale", "")
+                            .addParameter("locale", p.getLoginChainData().getLanguageCode())
                             .addParameter("banList", "")
                             .addParameter("resetLeft", Settings.reset)
+                            .addParameter("islandLevels",0)
                             .executeUpdate();
                 }
 

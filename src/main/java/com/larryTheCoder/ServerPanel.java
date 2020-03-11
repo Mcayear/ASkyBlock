@@ -130,7 +130,7 @@ public class ServerPanel implements Listener {
                 boolean locked = response.getToggleResponse(responseId++);
 
                 boolean teleport = response.getToggleResponse(responseId);
-
+                System.out.println("执行了 ServerPanel id:"+id+" - 133");
                 plugin.getIslandManager().createIsland(p, id, worldName, islandName, locked, EnumBiome.PLAINS, teleport);
                 break;
             // Challenges data
@@ -302,18 +302,19 @@ public class ServerPanel implements Listener {
 
                 pd3.saveIslandData();
                 break;
+                default:break;
         }
     }
 
     private void sendChallengeError(Player player) {
-        FormWindowModal confirm = new FormWindowModal("Error", "", "Okay", "Cancel");
-        confirm.setContent("You haven't finished all the challenges for the first level yet, make sure your completed the first level to move on the other level.");
+        FormWindowModal confirm = new FormWindowModal("错误", "", "确定", "取消");
+        confirm.setContent("你还没有完成第一级的所有挑战，请确保你完成了第一级的挑战，然后再进入另一级.");
 
         player.showFormWindow(confirm);
     }
 
     public void addChallengesForm(Player player) {
-        FormWindowSimple panelIsland = new FormWindowSimple("Quest Entries", "§aChoose your desired levels. Each levels contains a quests. Make sure you past all the quest in the level to go on into the next one!");
+        FormWindowSimple panelIsland = new FormWindowSimple("任务条目", "§a选择你想要的水平。每个关卡包含一个任务。确保你通过了这个关卡的所有任务进入下一个关卡!");
 
         for (String levels : Settings.challengeLevels) {
 //            if (plugin.getChallenges().isLevelAvailable(player, levels)) {
@@ -328,7 +329,7 @@ public class ServerPanel implements Listener {
     }
 
     private void showChallengeType(Player player, String type) {
-        FormWindowSimple panelIsland = new FormWindowSimple("Quest Menu for " + type, getLocale(player).panelChallengesHeader);
+        FormWindowSimple panelIsland = new FormWindowSimple("任务菜单 " + type, getLocale(player).panelChallengesHeader);
 
         HashMap<String, String> orders = new HashMap<>();
 //        for (Map.Entry<String, List<String>> list : plugin.getChallenges().getChallengeList().entrySet()) {
@@ -359,10 +360,10 @@ public class ServerPanel implements Listener {
         // TODO: Check max homes
 
         int homes = plugin.getIslandsInfo(player.getName()).size();
-        FormWindowCustom panelIsland = new FormWindowCustom("Island Menu");
+        FormWindowCustom panelIsland = new FormWindowCustom("空岛菜单");
 
         panelIsland.addElement(new ElementLabel(getLocale(player).panelIslandHeader));
-        panelIsland.addElement(new ElementInput(getLocale(player).panelIslandHome, "", "Home #" + (homes + 1)));
+        panelIsland.addElement(new ElementInput(getLocale(player).panelIslandHome, "", "家 #" + (homes + 1)));
         if (worldName.size() > 1) {
             panelIsland.addElement(new ElementDropdown(getLocale(player).panelIslandWorld, worldName));
         } else {
@@ -375,8 +376,8 @@ public class ServerPanel implements Listener {
         }
 
         panelIsland.addElement(new ElementLabel(getLocale(player).panelIslandDefault));
-        panelIsland.addElement(new ElementToggle("Locked", false));
-        panelIsland.addElement(new ElementToggle("Teleport to world", true));
+        panelIsland.addElement(new ElementToggle("上锁", false));
+        panelIsland.addElement(new ElementToggle("传送到世界", true));
 
         int id = player.showFormWindow(panelIsland);
         panelDataId.put(id, PanelType.TYPE_ISLAND);
@@ -385,7 +386,7 @@ public class ServerPanel implements Listener {
     public void addHomeFormOverlay(Player p) {
         List<IslandData> listHome = plugin.getIslandsInfo(p.getName());
 
-        FormWindowSimple islandHome = new FormWindowSimple("Home list", getLocale(p).panelHomeHeader.replace("[function]", "§aTeleport to them"));
+        FormWindowSimple islandHome = new FormWindowSimple("家列表", getLocale(p).panelHomeHeader.replace("[function]", "§a传送在这里"));
         for (IslandData pd : listHome) {
             islandHome.addButton(new ElementButton(pd.getIslandName()));
         }
@@ -406,7 +407,7 @@ public class ServerPanel implements Listener {
                 return;
             }
 
-            FormWindowSimple islandHome = new FormWindowSimple("Choose your home", getLocale(p).panelHomeHeader.replace("[function]", "§aDelete your island."));
+            FormWindowSimple islandHome = new FormWindowSimple("选择你的家", getLocale(p).panelHomeHeader.replace("[function]", "§a删除你的空岛."));
             for (IslandData pda : listHome) {
                 islandHome.addButton(new ElementButton(pda.getIslandName()));
             }
@@ -417,7 +418,7 @@ public class ServerPanel implements Listener {
         }
         mapIslandId.put(p, pd.getHomeCountId());
 
-        FormWindowModal confirm = new FormWindowModal("Delete", getLocale(p).deleteIslandSure, "§cDelete my island", "Cancel");
+        FormWindowModal confirm = new FormWindowModal("删除", getLocale(p).deleteIslandSure, "§c删除我的空岛", "取消");
 
         int id = p.showFormWindow(confirm);
         panelDataId.put(id, PanelType.SECOND_TIME_DELETE);
@@ -437,7 +438,7 @@ public class ServerPanel implements Listener {
                 return;
             }
 
-            FormWindowSimple islandHome = new FormWindowSimple("Choose your home", getLocale(p).panelHomeHeader.replace("[function]", "§aSet your island settings."));
+            FormWindowSimple islandHome = new FormWindowSimple("选择你的家", getLocale(p).panelHomeHeader.replace("[function]", "§a设置你的空岛."));
             for (IslandData pda : listHome) {
                 islandHome.addButton(new ElementButton(pda.getIslandName()));
             }
@@ -447,7 +448,7 @@ public class ServerPanel implements Listener {
             return;
         }
 
-        FormWindowCustom settingForm = new FormWindowCustom("" + pd.getIslandName() + "'s Settings");
+        FormWindowCustom settingForm = new FormWindowCustom("" + pd.getIslandName() + "设置");
 
         settingForm.addElement(new ElementLabel(getLocale(p).panelProtectionHeader));
 
@@ -478,7 +479,7 @@ public class ServerPanel implements Listener {
                 return;
             }
 
-            FormWindowSimple islandHome = new FormWindowSimple("Choose your home", getLocale(p).panelHomeHeader.replace("[function]", "§aSet your island settings."));
+            FormWindowSimple islandHome = new FormWindowSimple("选择你的家", getLocale(p).panelHomeHeader.replace("[function]", "§a设置你的空岛."));
             for (IslandData pda : listHome) {
                 islandHome.addButton(new ElementButton(pda.getIslandName()));
             }
@@ -488,11 +489,11 @@ public class ServerPanel implements Listener {
             return;
         }
 
-        FormWindowCustom settingForm = new FormWindowCustom("" + pd.getIslandName() + "'s Settings");
+        FormWindowCustom settingForm = new FormWindowCustom("" + pd.getIslandName() + "'设置");
 
         settingForm.addElement(new ElementLabel(getLocale(p).panelSettingHeader));
-        settingForm.addElement(new ElementToggle("Locked", pd.isLocked()));
-        settingForm.addElement(new ElementInput("Island Name", "", pd.getIslandName())); // islandMaxNameLong
+        settingForm.addElement(new ElementToggle("上锁", pd.isLocked()));
+        settingForm.addElement(new ElementInput("岛屿名称", "", pd.getIslandName())); // islandMaxNameLong
         mapIslandId.put(p, pd.getHomeCountId());
 
         int id = p.showFormWindow(settingForm);

@@ -38,6 +38,12 @@ public class IslandDataBuilder {
         return this;
     }
 
+    public IslandDataBuilder setHomeId(int homeId){
+        data.setHomeCountId(homeId);
+        return this;
+    }
+
+
     public IslandDataBuilder setIslandUniquePlotId(int generatedData) {
         data.setIslandUniquePlotId(generatedData);
 

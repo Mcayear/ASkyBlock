@@ -35,10 +35,10 @@ schematicList:
       FILE_NAME: "island.schematic"
       # This island name
       # You can use & as color codes
-      NAME: "&eThe Original"
+      NAME: "&e经典岛屿"
       # This is an example of a description
       # This will be used in sign and others (Must be not long 25 char, otherwise the sign will be empty)
-      DESCRIPTION: "The default island for starters. Great resource with extreme height."
+      DESCRIPTION: "作为初学者的默认孤岛。极高的资源."
       # Permission base
       PERMISSION: "is.create"
       # Rating
@@ -53,8 +53,8 @@ schematicList:
     # This is the order of your schematic (2)
     featured:
       FILE_NAME: "featured.schematic"
-      NAME: "&eFeatured &cOne"
-      DESCRIPTION: "&Wow, Featured..."
+      NAME: "&e特色 &c岛屿"
+      DESCRIPTION: "&哇，特色。。。"
       PERMISSION: "is.create"
       RATING: 5
       BIOME: "FOREST"
@@ -62,8 +62,8 @@ schematicList:
     # Double island (3)
     double:
       FILE_NAME: "double.schematic"
-      NAME: "&eIsland &dDuo"
-      DESCRIPTION: "Pretty much for double islands. Two close islands. Double more fun. But a little easier. Credit: Antal1609"
+      NAME: "&d双子 &e岛"
+      DESCRIPTION: "双岛差不多了。两个封闭的岛屿。加倍有趣。但是稍微容易一点。学分：Antal1609"
       PERMISSION: "is.create"
       RATING: 9
       BIOME: "FOREST"
@@ -73,8 +73,8 @@ schematicList:
     # Harder schematic (4)
     extrahard:
       FILE_NAME: "harder.schematic"
-      NAME: "&lBlack &bDiamonds"
-      DESCRIPTION: "&cExperts only! &aMinimal resources. &aWith a few diamonds."
+      NAME: "&l黑色 &b钻石"
+      DESCRIPTION: "&c只有专家！&a主要资源。&a有几颗钻石."
       PERMISSION: "is.create"
       RATING: 1
       BIOME: "FOREST"

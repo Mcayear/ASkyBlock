@@ -27,8 +27,13 @@ package com.larryTheCoder.cache;
 
 import cn.nukkit.Player;
 import cn.nukkit.level.Position;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.ConfigSection;
+import com.google.common.base.Preconditions;
 import com.larryTheCoder.ASkyBlock;
 import com.larryTheCoder.database.DatabaseManager;
+import com.larryTheCoder.task.TaskManager;
+import com.larryTheCoder.utils.Utils;
 import lombok.Getter;
 import org.sql2o.Connection;
 import org.sql2o.data.Row;
@@ -37,6 +42,7 @@ import org.sql2o.data.Table;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 import static com.larryTheCoder.database.TableSet.*;
@@ -83,6 +89,10 @@ public class FastCache {
     // Since ArrayList is modifiable, there's no need to replace the cache again into the list.
     private final List<FastCacheData> dataCache = new ArrayList<>();
 
+    // To securely store FastCache timestamp into a .json file.
+    public static final ConcurrentLinkedQueue<FastCacheData> storeSchedule = new ConcurrentLinkedQueue<>();
+
+
     public FastCache(ASkyBlock plugin) {
         this.plugin = plugin;
 
@@ -90,8 +100,79 @@ public class FastCache {
     }
 
     public void loadFastCache() {
+        Config config = new Config(Utils.DIRECTORY + "cache.yml", Config.YAML);
+
+        plugin.getDatabase().pushQuery(new DatabaseManager.DatabaseImpl() {
+            private final List<FastCacheData> dataCache = new ArrayList<>();
+
+            @Override
+            public void executeQuery(Connection connection) {
+                for (String userName : config.getAll().keySet()) {
+                    FastCacheData data = new FastCacheData(userName);
+
+                    // Fetch PlayerData first.
+                    Table table = connection.createQuery(FETCH_PLAYER_MAIN.getQuery())
+                            .addParameter("plotOwner", userName)
+                            .executeAndFetchTable();
+
+                    data.setPlayerData(PlayerData.fromRows(table.rows().get(0)));
+
+                    // Then we fetch IslandData.
+                    table = connection.createQuery(FETCH_ISLANDS_PLOT.getQuery())
+                            .addParameter("pName", userName)
+                            .executeAndFetchTable();
+
+                    for (Row islandRow : table.rows()) {
+                        int islandId = islandRow.getInteger("islandUniqueId");
+
+                        table = connection.createQuery(FETCH_ISLAND_DATA.getQuery())
+                                .addParameter("islandUniquePlotId", islandId)
+                                .executeAndFetchTable();
+
+                        if (table.rows().isEmpty()) {
+                            data.addIslandData(IslandData.fromRows(islandRow));
+                            continue;
+                        }
+
+                        Row dataRow = table.rows().get(0);
+                        data.addIslandData(IslandData.fromRows(islandRow, dataRow));
+                    }
+
+                    dataCache.add(data);
+                }
+            }
+
+            @Override
+            public void onCompletion(Exception err) {
+                Utils.sendDebug(String.format("Loaded %s cache data.", dataCache.size()));
+
+                ASkyBlock.get().getFastCache().addAllCacheData(dataCache);
+            }
+        });
+
+        TaskManager.runTaskAsync(() -> {
+            FastCacheData consumer;
+            while ((consumer = storeSchedule.poll()) != null) {
+                ConfigSection playerSec = new ConfigSection();
+                playerSec.set("lastFetched", consumer.lastUpdatedQuery);
+                playerSec.set("islandIds", new ArrayList<>(consumer.getIslandData().keySet()));
+
+                config.set(consumer.getDataIdentifier(), playerSec);
+            }
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
+
+    public final void addAllCacheData(List<FastCacheData> list) {
+        dataCache.addAll(list);
+    }
+
 
     /**
      * Retrieves an information of an island with a given position.
@@ -172,7 +253,7 @@ public class FastCache {
                     .addParameter("pName", playerName)
                     .executeAndFetchTable().rows(), connection);
 
-            createIntoDb(playerName, islandList);
+            saveIntoDb(playerName, islandList);
 
             return islandList.stream().filter(i -> i.getHomeCountId() == homeNum).findFirst().orElse(null);
         }
@@ -194,7 +275,7 @@ public class FastCache {
                             .addParameter("pName", playerName)
                             .executeAndFetchTable().rows(), connection);
 
-                    createIntoDb(playerName, islandList);
+                    saveIntoDb(playerName, islandList);
                 }
             });
             return;
@@ -239,7 +320,13 @@ public class FastCache {
 
                 @Override
                 public void onCompletion(Exception err) {
+                    if (err != null) {
+                        err.printStackTrace();
+                        return;
+                    }
+
                     resultOutput.accept(playerData);
+                    saveIntoDb(playerData);
                 }
             });
 
@@ -260,8 +347,8 @@ public class FastCache {
      * @param data The entire list of an island data.
      */
     private void putIslandUnspecified(List<IslandData> data) {
-        final String[] playerNames = new String[32]; // (n + 1) for a length
-        final FastCacheData[] cacheObject = new FastCacheData[32];
+        final String[] playerNames = new String[data.size()]; // (n + 1) for a length
+        final FastCacheData[] cacheObject = new FastCacheData[data.size()];
 
         for (IslandData pd : data) {
             int keyVal = 0;
@@ -271,7 +358,9 @@ public class FastCache {
                 cacheObject[0] = new FastCacheData(pd.getPlotOwner());
             } else {
                 while (playerNames[keyVal].equalsIgnoreCase(pd.getPlotOwner()) || playerNames[keyVal].isEmpty()) {
-                    if (keyVal++ > 30) break;
+                    if (keyVal++ > 30) {
+                        break;
+                    }
                 }
 
                 // If the array of this key is empty, then there is no player in this value.
@@ -308,7 +397,7 @@ public class FastCache {
      * @param playerName The name of the player, or XUID if preferred.
      * @param data       List of IslandData for this player
      */
-    public void createIntoDb(String playerName, List<IslandData> data) {
+    public void saveIntoDb(String playerName, List<IslandData> data) {
         FastCacheData object = dataCache.stream().filter(i -> i.anyMatch(playerName)).findFirst().orElse(null);
         if (object == null) {
             object = new FastCacheData(playerName);
@@ -329,10 +418,10 @@ public class FastCache {
      * @param playerName The name of the player, or XUID if preferred.
      * @param data       PlayerData for this player
      */
-    public void createIntoDb(String playerName, PlayerData data) {
-        FastCacheData object = dataCache.stream().filter(i -> i.anyMatch(playerName)).findFirst().orElse(null);
+    public void saveIntoDb(PlayerData data) {
+        FastCacheData object = dataCache.stream().filter(i -> i.anyMatch(data.getPlayerName())).findFirst().orElse(null);
         if (object == null) {
-            object = new FastCacheData(playerName);
+            object = new FastCacheData(data.getPlayerName());
             object.setPlayerData(data);
 
             dataCache.add(object);
@@ -386,18 +475,24 @@ public class FastCache {
         }
 
         public void addIslandData(IslandData newData) {
+            Preconditions.checkState(this.islandData.containsKey(newData.getIslandUniquePlotId()), "IslandData already exists in this cache.");
+            updateTime();
             islandData.put(newData.getIslandUniquePlotId(), newData);
         }
 
         void setPlayerData(PlayerData playerData) {
+            Preconditions.checkState(this.playerData != null, "PlayerData already exists in this cache.");
+            updateTime();
             this.playerData = playerData;
         }
 
         boolean anyMatch(String pl) {
+            updateTime();
             return playerData == null ? ownedBy.equalsIgnoreCase(pl) : playerData.getPlayerName().equalsIgnoreCase(pl);
         }
 
         boolean anyIslandMatch(int islandId) {
+            updateTime();
             return islandData.values().stream().anyMatch(o -> o.getHomeCountId() == islandId);
         }
 
@@ -406,11 +501,17 @@ public class FastCache {
         }
 
         IslandData getIslandById(int homeId) {
+            updateTime();
             return islandData.values().stream().filter(i -> i.getHomeCountId() == homeId).findFirst().orElse(null);
         }
 
         void updateTime() {
             lastUpdatedQuery = Timestamp.from(Instant.now());
+            storeSchedule.offer(this);
+        }
+
+        public String getDataIdentifier() {
+            return ownedBy;
         }
     }
 }

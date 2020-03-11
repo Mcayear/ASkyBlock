@@ -60,23 +60,26 @@ public class AdminCategory extends SubCategory {
                 return sender.hasPermission("is.command.kick") && sender.isPlayer();
             case "quit":
                 return sender.hasPermission("is.command.quit") && sender.isPlayer();
+            default:break;
         }
         return false;
     }
 
+    @Override
     public String getDescription(String command) {
         switch (command.toLowerCase()) {
             case "accept":
-                return "Accept an invitation from a player.";
+                return "接受玩家的邀请.";
             case "deny":
             case "reject":
-                return "Denies an invitation from a player.";
+                return "拒绝玩家的邀请.";
             case "invite":
-                return "Invite a player to be as your island member.";
+                return "邀请一个玩家成为您的岛屿成员.";
             case "kickmember":
-                return "Kick a member from being your island member.";
+                return "将某个成员从您的岛屿成员中踢出.";
             case "quit":
-                return "Leave from being an island member.";
+                return "离岛.";
+            default:break;
         }
         return "NaN";
     }
@@ -152,6 +155,7 @@ public class AdminCategory extends SubCategory {
 
                 // Now we add the invitation into list.
                 getPlugin().getInvitationHandler().addInvitation(p, inviter);
+            default:break;
         }
     }
 }

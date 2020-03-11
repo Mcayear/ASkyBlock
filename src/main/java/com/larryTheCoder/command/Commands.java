@@ -77,7 +77,11 @@ public class Commands extends PluginCommand<ASkyBlock> {
         }
 
         if (args.length == 0) {
-            sender.sendMessage("§cUnknown command. Please use /is help for a list of commands");
+            if (p == null) {
+                sender.sendMessage("§c未知指令 使用 /is help 获取帮助指令");
+            } else {
+                getPlugin().getIslandManager().handleIslandCommand(p, false);
+            }
 
             return true;
         }
@@ -105,7 +109,7 @@ public class Commands extends PluginCommand<ASkyBlock> {
 
         SubCategory cmdCategory = commandCategory.stream().filter(i -> i.getCommands().contains(args[0].toLowerCase())).findFirst().orElse(null);
         if (cmdCategory == null || !cmdCategory.canUse(sender, args[0])) {
-            sender.sendMessage("§cUnknown command. Please use /is help for a list of commands");
+            sender.sendMessage("§c未知指令 使用 /is help 获取帮助指令");
 
             return true;
         }
@@ -137,7 +141,7 @@ public class Commands extends PluginCommand<ASkyBlock> {
                     pageNumber = 1;
                 }
 
-                sender.sendMessage("§9--- §cASkyBlock help §7page §e" + pageNumber + " §7of §e" + totalPage + "§9 ---§r§f");
+                sender.sendMessage("§9--- §cASkyBlock help §7页数 §e" + pageNumber + " §7/ §e" + totalPage + "§9 ---§r§f");
                 break;
             case 1:
                 helpList.add("&7isa rename &l&5»&r&f &a" + getPlugin().getLocale(sender).adminHelpRename);
@@ -157,7 +161,7 @@ public class Commands extends PluginCommand<ASkyBlock> {
                     pageNumber = 1;
                 }
 
-                sender.sendMessage("§e--- §eAdmin SkyBlock Help Page §a" + pageNumber + " §eof §a" + totalPage + " §e---");
+                sender.sendMessage("§e--- §eAdmin SkyBlock Help 页数 §a" + pageNumber + " §e/ §a" + totalPage + " §e---");
                 break;
         }
 

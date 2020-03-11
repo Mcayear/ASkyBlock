@@ -146,6 +146,12 @@ public class PlayerData implements Cloneable {
         return Collections.unmodifiableMap(challengeList);
     }
 
+    @Override
+    public String toString() {
+        return String.format("PlayerData(playerName=%s, playerXUID=%s, resetLeft=%s, islandLevel=%s, locale=%s)",
+                playerName, playerXUID, resetLeft, islandLevel, locale);
+    }
+
     /**
      * Fetch challenges body of this player.
      * <p>

@@ -98,7 +98,7 @@ public class ChatHandler implements Listener {
             for (String teamMembers : teams) {
                 Player teamPlayer = plugin.getServer().getPlayer(teamMembers);
                 if (teamPlayer != null) {
-                    teamPlayer.sendMessage(plugin.getPrefix() + message);
+                    teamPlayer.sendMessage(this.plugin.getPrefix() + " [团队] " + player.getName() + "> " + message);
                     if (!teamMembers.equals(playerUUID)) {
                         online = true;
                     }

@@ -73,9 +73,9 @@ public class ChatCategory extends SubCategory {
     public String getDescription(String commandName) {
         switch (commandName.toLowerCase()) {
             case "chat":
-                return "Chat with your island members.";
+                return "与您的岛屿成员聊天.";
             case "messages":
-                return "Read a new messages from island leader.";
+                return "阅读岛主的新留言.";
             default:
                 return "NaN";
         }
@@ -95,18 +95,19 @@ public class ChatCategory extends SubCategory {
                 TeamManager manager = getPlugin().getTManager();
                 if (manager.hasTeam(p.getName())) {
                     // Check if team members are online
-                    boolean online = false;
-                    for (String teamMember : manager.getPlayerCoop(p.getName()).getMembers()) {
-                        if (!teamMember.equals(p.getName()) && getPlugin().getServer().getPlayer(teamMember) != null) {
-                            online = true;
-                        }
-                    }
-                    if (!online) {
-                        p.sendMessage(getPrefix() + getLocale(p).teamChatNoTeamAround);
-                        p.sendMessage(getPrefix() + getLocale(p).teamChatStatusOff);
-                        getPlugin().getChatHandler().unSetPlayer(p);
-                        break;
-                    }
+                    //不检测在线情况
+//                    boolean online = false;
+//                    for (String teamMember : manager.getPlayerCoop(p.getName()).getMembers()) {
+//                        if (!teamMember.equals(p.getName()) && getPlugin().getServer().getPlayer(teamMember) != null) {
+//                            online = true;
+//                        }
+//                    }
+//                    if (!online) {
+//                        p.sendMessage(getPrefix() + getLocale(p).teamChatNoTeamAround);
+//                        p.sendMessage(getPrefix() + getLocale(p).teamChatStatusOff);
+//                        getPlugin().getChatHandler().unSetPlayer(p);
+//                        break;
+//                    }
                     if (getPlugin().getChatHandler().isTeamChat(p)) {
                         // Toggle
                         p.sendMessage(getPrefix() + getLocale(p).teamChatStatusOff);
@@ -127,6 +128,7 @@ public class ChatCategory extends SubCategory {
                     p.sendMessage(getPrefix() + getPlugin().getLocale(p).newsEmpty);
                 }
                 break;
+            default:break;
         }
 
     }

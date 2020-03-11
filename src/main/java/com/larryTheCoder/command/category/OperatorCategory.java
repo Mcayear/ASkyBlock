@@ -69,7 +69,7 @@ public class OperatorCategory extends SubCategory {
 
     @Override
     public String getDescription(String commandName) {
-        return "Special command for admins to control other islands";
+        return "管理员控制其他岛屿的特别命令";
     }
 
     @Override
@@ -192,7 +192,7 @@ public class OperatorCategory extends SubCategory {
                     break;
                 }
                 if (args.length <= 1) {
-                    sender.sendMessage(getPlugin().getPrefix() + "§aUsage: /" + commandLabel + " completechallenge <player>");
+                    sender.sendMessage(getPlugin().getPrefix() + "§a使用: /" + commandLabel + " completechallenge <player>");
                     break;
                 }
                 IPlayer offlinePlayer = Server.getInstance().getOfflinePlayer(args[1]);
@@ -219,7 +219,7 @@ public class OperatorCategory extends SubCategory {
                     break;
                 }
                 if (args.length <= 1) {
-                    sender.sendMessage(getPlugin().getPrefix() + "§aUsage: /" + commandLabel + " resetchallenge <player>");
+                    sender.sendMessage(getPlugin().getPrefix() + "§a使用: /" + commandLabel + " resetchallenge <player>");
                     break;
                 }
 
@@ -249,7 +249,7 @@ public class OperatorCategory extends SubCategory {
                 if (pl == null) {
                     // Well its console, so they could perform it by deleting it with command isn't?
                     if (args.length <= 2) {
-                        sender.sendMessage(getPlugin().getPrefix() + "§aUsage: /" + commandLabel + " delete <player> <id>");
+                        sender.sendMessage(getPlugin().getPrefix() + "§a使用: /" + commandLabel + " delete <player> <id>");
                         break;
                     }
                     int id = Integer.getInteger(args[2]);
@@ -277,7 +277,7 @@ public class OperatorCategory extends SubCategory {
 
                 // Try to get the owner of this island
                 String owner = island.getPlotOwner();
-                if (!args[1].equalsIgnoreCase("confirm")) {
+                if (!"confirm".equalsIgnoreCase(args[1])) {
                     sender.sendMessage(getPlugin().getPrefix() + getPlugin().getLocale(pl).adminDeleteIslandError.replace("[player]", owner));
                     break;
                 }
@@ -298,13 +298,14 @@ public class OperatorCategory extends SubCategory {
                     break;
                 }
                 if (args.length <= 1) {
-                    sender.sendMessage(getPlugin().getPrefix() + "§aUsage: /" + commandLabel + " info <player>");
+                    sender.sendMessage(getPlugin().getPrefix() + "§a使用: /" + commandLabel + " info <player>");
                     break;
                 }
 
                 // Show them, lets see if this dude got a data in database
                 showInfoChallenges(Server.getInstance().getOfflinePlayer(args[1]), sender);
                 break;
+            default:break;
         }
     }
 
@@ -321,28 +322,28 @@ public class OperatorCategory extends SubCategory {
             sender.sendMessage(TextFormat.RED + getPlugin().getLocale("").errorUnknownPlayer);
             return;
         }
-        sender.sendMessage("Name:" + TextFormat.GREEN + player.getName());
+        sender.sendMessage("名字:" + TextFormat.GREEN + player.getName());
         sender.sendMessage("UUID: " + TextFormat.YELLOW + player.getUniqueId());
 
         // Completed challenges
-        sender.sendMessage(TextFormat.WHITE + "Challenges:");
+        sender.sendMessage(TextFormat.WHITE + "挑战:");
         Map<String, Boolean> challenges = pd.getChallengeStatus();
         Map<String, Integer> challengeTimes = pd.getChallengeTimes();
         if (challenges.isEmpty()) {
-            sender.sendMessage(TextFormat.RED + "Empty in here...");
+            sender.sendMessage(TextFormat.RED + "这里是空的...");
             return;
         }
         for (String c : challenges.keySet()) {
             if (challengeTimes.containsKey(c)) {
                 sender.sendMessage(c + ": " + (challenges.get(c) ?
-                        TextFormat.GREEN + "Complete" :
-                        TextFormat.AQUA + "Incomplete")
+                        TextFormat.GREEN + "完成" :
+                        TextFormat.AQUA + "未完成")
                         + "(" + pd.checkChallengeTimes(c) + ")");
 
             } else {
                 sender.sendMessage(c + ": " + (challenges.get(c) ?
-                        TextFormat.GREEN + "Complete" :
-                        TextFormat.AQUA + "Incomplete"));
+                        TextFormat.GREEN + "完成" :
+                        TextFormat.AQUA + "未完成"));
             }
         }
     }

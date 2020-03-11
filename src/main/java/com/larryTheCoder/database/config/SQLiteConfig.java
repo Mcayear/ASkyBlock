@@ -61,7 +61,9 @@ public class SQLiteConfig implements AbstractConfig {
     @Override
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public Sql2o openConnection() throws SQLException {
-        if (checkConnection()) return this.connection;
+        if (checkConnection()) {
+            return this.connection;
+        }
 
         File file = new File(this.dbLocation);
         if (!file.exists()) {
@@ -81,7 +83,7 @@ public class SQLiteConfig implements AbstractConfig {
             return false;
         }
 
-        try (java.sql.Connection con = connection.open().getJdbcConnection()) {
+        try (java.sql.Connection con = connection.getDataSource().getConnection()) {
             return !con.isClosed();
         }
     }
@@ -96,7 +98,7 @@ public class SQLiteConfig implements AbstractConfig {
         if (this.connection == null) {
             return false;
         }
-        this.connection.open().getJdbcConnection().close();
+        this.connection.getDataSource().getConnection().close();
         this.connection = null;
         return true;
     }

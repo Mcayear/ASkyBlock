@@ -86,20 +86,20 @@ public class GenericCategory extends SubCategory {
         switch (commandName.toLowerCase()) {
             case "expel":
             case "kick":
-                return "Kick out a member from your island.";
+                return "把你岛上的人赶出去.";
             case "lobby":
             case "spawn":
-                return "Leave your island and teleport to server lobby.";
+                return "离开您的岛并传送到服务器大厅.";
             case "locale":
-                return "Change your preferred locale.";
+                return "更改首选区域设置.";
             case "protection":
-                return "Change your island protection settings.";
+                return "更改您的岛屿保护设置.";
             case "settings":
-                return "Change your island preferred settings.";
+                return "更改您的岛屿首选设置.";
             case "top":
-                return "Shows top ten islands with highest points.";
+                return "显示前十的岛屿.";
             case "about":
-                return "About this plugin and its version.";
+                return "关于这个插件及其版本.";
             default:
                 return "NaN";
         }
@@ -133,8 +133,12 @@ public class GenericCategory extends SubCategory {
                     break;
                 }
 
-                if (!p.isOp() && p.getGamemode() != 0) p.setGamemode(0);
-                if (Settings.saveInventory) getPlugin().getInventory().loadPlayerInventory(p);
+                if (!p.isOp() && p.getGamemode() != 0) {
+                    p.setGamemode(0);
+                }
+                if (Settings.saveInventory) {
+                    getPlugin().getInventory().loadPlayerInventory(p);
+                }
 
                 p.teleport(Location.fromObject(getPlugin().getServer().getDefaultLevel().getSafeSpawn()));
                 break;
@@ -201,6 +205,7 @@ public class GenericCategory extends SubCategory {
                 sender.sendMessage("§7GitHub link: §6" + prep.getProperty("git.remote.origin.url", "§cUnverified"));
                 sender.sendMessage("§7Last commit by: §6" + prep.getProperty("git.commit.user.name", "Unknown"));
                 sender.sendMessage("-- EOL");
+                default:break;
         }
     }
 
@@ -209,7 +214,7 @@ public class GenericCategory extends SubCategory {
 
         TreeMap<Integer, String> locales = new TreeMap<>();
         for (ASlocales locale : getPlugin().getAvailableLocales().values()) {
-            if (!locale.getLocaleName().equalsIgnoreCase("locale")) {
+            if (!"locale".equalsIgnoreCase(locale.getLocaleName())) {
                 locales.put(locale.getIndex(), locale.getLanguageName() + " (" + locale.getCountryName() + ")");
             }
         }

@@ -105,6 +105,7 @@ public class OperatorCategory extends SubCategory {
                     cfg.set(args[1] + ".protectionRange", world.getProtectionRange());
                     cfg.set(args[1] + ".stopTime", world.isStopTime());
                     cfg.set(args[1] + ".seaLevel", world.getSeaLevel());
+                    cfg.set(levelSafeName + ".signConfig", new String[]{"&aWelcome to", "&e[player]'s", "&aIsland! Enjoy.", ""});
                     cfg.save();
                     getPlugin().saveLevel(false);
                     getPlugin().getLevel().add(world);

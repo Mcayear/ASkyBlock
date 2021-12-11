@@ -324,6 +324,7 @@ public class ASkyBlock extends ASkyBlockAPI {
                             .useDefaultChest(section.getBoolean("useDefaultChest"))
                             .setSeaLevel(section.getInt("seaLevel"))
                             .setLevel(level)
+                            .setSignSettings(section.getList("signConfig"))
                             .build();
 
                     worldSettings.verifyWorldSettings();
